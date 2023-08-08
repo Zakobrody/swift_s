@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+        {% block stylesheets %}
+            {#{{ encore_entry_link_tags('app') }}#}
+            <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+
+        {% endblock %}
+
+        {% block javascripts %}
+            {#<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>#}
+        {% endblock %}
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_user_import') }}">Zaimportuj plik z użytkownikami</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="#">Jesteś zalogowany jako: {{ app.user.email }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Wyloguj</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_login' %}active{% endif %}" href="{{ path('app_login') }}">Logowanie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_register' %}active{% endif %}" href="{{ path('app_register') }}">Rejestracja</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="container mt-5">
+                <div class="alert alert-{{ label }} alert-fill alert-close alert-dismissible fade show m-b-lg" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% block body %}{% endblock %}
+    </body>
+</html>
