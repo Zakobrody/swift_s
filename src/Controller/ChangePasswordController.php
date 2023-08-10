@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserPassword;
 use App\Form\ForceChangePasswordType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +35,7 @@ class ChangePasswordController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $form = $this->createForm(ForceChangePasswordType::class, $user);
+        $form = $this->createForm(ForceChangePasswordType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -42,10 +43,16 @@ class ChangePasswordController extends AbstractController
                 $user,
                 $form->get('password')->getData()
             );
+
             $user->setPassword($newPassword);
             $user->setLastChangePasswordDate(new DateTime());
 
+            $uPassword = new UserPassword();
+            $uPassword->setUser($user);
+            $uPassword->setPassword($newPassword);
+
             $entityManager->persist($user);
+            $entityManager->persist($uPassword);
             $entityManager->flush();
 
             $email = (new Email())

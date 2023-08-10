@@ -2,14 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\Constraint\UniquePassword;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotEqualTo;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class ForceChangePasswordType extends AbstractType
@@ -32,10 +31,9 @@ class ForceChangePasswordType extends AbstractType
                         'pattern' => '/^(?=.*[A-Z]){2,}(?=.*[a-z]){2,}(?=.*[0-9]){2,}(?=.*[!@#$%^&*]){2,}[a-zA-Z0-9!@#$%^&*]{8,}$/',
                         'message' => 'Hasło musi zawierać co najmniej 8 znaków. W tym min.: 2 małe litery, 2 duże litery, 2 cyfry i 2 znaki specjalne.',
                     ]),
-//                    new NotEqualTo([
-//                        'value' => $options['data']->getPassword(),
-//                        'message' => "Hasło musi być różne od poprzedniego"
-//                    ]),
+                    new UniquePassword([
+                        'field'       => 'password',
+                    ]),
                 ],
             ]);
     }
@@ -43,7 +41,7 @@ class ForceChangePasswordType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            // Configure your form options here
         ]);
     }
 }

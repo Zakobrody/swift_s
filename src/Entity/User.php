@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -45,6 +46,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastChangePasswordDate;
+
+    /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="App\Entity\UserPassword", mappedBy="user")
+     */
+    private $userPasswords;
 
     public function getId(): ?int
     {
@@ -149,6 +156,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastChangePasswordDate(?DateTime $lastChangePasswordDate): void
     {
         $this->lastChangePasswordDate = $lastChangePasswordDate;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUserPasswords(): Collection
+    {
+        return $this->userPasswords;
+    }
+
+    /**
+     * @param Collection $userPasswords
+     */
+    public function setUserPasswords(Collection $userPasswords): void
+    {
+        $this->userPasswords = $userPasswords;
     }
 
     public function getForcePasswordChange(): bool
