@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -27,6 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email()
      */
     private $email;
 
@@ -159,9 +161,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection
+     * @return Collection|null
      */
-    public function getUserPasswords(): Collection
+    public function getUserPasswords(): ?Collection
     {
         return $this->userPasswords;
     }
@@ -174,16 +176,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userPasswords = $userPasswords;
     }
 
-    public function getForcePasswordChange(): bool
+    public function isForcePasswordChange(?int $days = null): bool
     {
+        if ($days === null) {
+            $days = self::DAYS_FROM_LAST_PASSWORD_CHANGE;
+        }
         if (NULL === $this->getLastChangePasswordDate()) {
             return true;
         }
 
-        if (self::DAYS_FROM_LAST_PASSWORD_CHANGE <= (new DateTime())->diff($this->getLastChangePasswordDate())->days) {
+        if ($days <= (new DateTime())->diff($this->getLastChangePasswordDate())->days) {
             return true;
         }
 
         return false;
     }
+
 }

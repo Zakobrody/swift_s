@@ -44,9 +44,15 @@ class UserController extends AbstractController
                 $filePath = $csvFile->moveFile($fileName);
                 $csvData = $csvFile->readFile($filePath);
 
-                $importUserService->processFile($csvData);
+                $responseData = $importUserService->processFile($csvData);
 
-                $this->addFlash('success', 'Pomyślne zaimportowano listę użytkowników.');
+                $this->addFlash('success', "Pomyślne zaimportowano plik z listą użytkowników. Pobrane rekordy z pliku: {$responseData['total']}");
+                if (!empty($responseData['done'])) {
+                    $this->addFlash('success', "Rekordy dodane do bazy: {$responseData['done']}");
+                }
+                if (!empty($responseData['error'])) {
+                    $this->addFlash('danger', "Błędne dane: {$responseData['error']}");
+                }
                 $this->redirectToRoute('app_user');
             } catch (Exception $e) {
                 $this->addFlash('danger', 'Wystąpił błąd podczas importu danych.');
