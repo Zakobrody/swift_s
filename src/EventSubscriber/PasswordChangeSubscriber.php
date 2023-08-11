@@ -39,7 +39,7 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
         }
 
         // if it's not their first login, and they do not need to change their password, move on
-        if (!$user->getForcePasswordChange()) {
+        if (!$user->isForcePasswordChange()) {
             return;
         }
 
