@@ -44,6 +44,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($uPassword);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Użytkownik zarejestrowany pomyślnie.');
             return $this->redirectToRoute('app_login');
         }
 

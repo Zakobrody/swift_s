@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Constraint\Password;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -37,10 +38,7 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Podaj hasło',
                     ]),
-                    new Regex([
-                        'pattern' => '/^(?=.*[A-Z]){2,}(?=.*[a-z]){2,}(?=.*[0-9]){2,}(?=.*[!@#$%^&*]){2,}[a-zA-Z0-9!@#$%^&*]{8,}$/',
-                        'message' => 'Hasło musi zawierać co najmniej 8 znaków. W tym min.: 2 małe litery, 2 duże litery, 2 cyfry i 2 znaki specjalne.',
-                    ]),
+                    new Password(),
                 ],
             ])
         ;
